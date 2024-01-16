@@ -1,0 +1,172 @@
+<div mat-dialog-title>
+  <div class="row">
+    <div class="col">
+      <h5 class="font-usco-vt font-weight-bold">
+        <i class="fa-solid fa-circle-info"></i> Información Complementaria
+      </h5>
+    </div>
+    <div class="col text-right font-usco-vt font-weight-bold mr-4">
+      <i class="fa-solid fa-xmark" mat-dialog-close></i>
+    </div>
+  </div>
+</div>
+<hr />
+<mat-dialog-content>
+  <div class="row">
+    <div class="col">
+      <form class="pl-4 pr-4">
+        <div class="row text-left mb-2">
+          <div class="col">
+            <h6 class="font-usco-vt font-weight-bold">Vigilante:</h6>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <mat-form-field class="example-full-width">
+                <mat-label>Nombre</mat-label>
+                <input
+                  readonly
+                  matInput
+                  class="form_control"
+                  type="text"
+                  value="{{data.vigilante.nombre}} {{data.vigilante.apellido}}"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <mat-form-field class="example-full-width">
+                <mat-label>Fecha Ingreso</mat-label>
+                <input
+                  readonly
+                  matInput
+                  class="form_control"
+                  type="text"
+                  value="{{data.vigilante.fechaCreacion | date: 'dd-MM-yyyy'}}"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <mat-form-field class="example-full-width">
+                <mat-label>Tipo de documento</mat-label>
+                <mat-select [(value)]="data.vigilante.documento.codigo">
+                  <mat-option
+                    *ngFor="let documento of tipoDocumentos"
+                    [value]="documento.codigo"
+                    >{{documento.tipoNombre}}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <mat-form-field class="example-full-width">
+                <mat-label>Identificacion</mat-label>
+                <input
+                  readonly
+                  matInput
+                  class="form_control"
+                  type="text"
+                  value="{{data.vigilante.identificacion}}"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <mat-form-field class="example-full-width">
+                <mat-label>Correo</mat-label>
+                <input
+                  readonly
+                  matInput
+                  class="form_control"
+                  type="text"
+                  value="{{data.vigilante.correo}}"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <mat-form-field class="example-full-width">
+                <mat-label>Empresa</mat-label>
+                <input
+                  readonly
+                  matInput
+                  class="form_control"
+                  type="text"
+                  value="{{data.vigilante.empresa}}"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <mat-form-field class="example-full-width">
+                <mat-label>Fecha Retiro</mat-label>
+                <input
+                  readonly
+                  matInput
+                  class="form_control"
+                  type="text"
+                  value="{{data.vigilante.fechaRetiro | date: 'dd-MM-yyyy'}}"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <mat-form-field class="example-full-width">
+                <span
+                  matPrefix
+                  class="btn btn-success mr-2 btn-sm"
+                  *ngIf="data.vigilante.estado === 1"
+                  ><i class="fa-solid fa-check"></i
+                ></span>
+                <span
+                  matPrefix
+                  class="btn btn-danger mr-2 btn-sm"
+                  *ngIf="data.vigilante.estado === 0"
+                  ><i class="fa-solid fa-xmark"></i
+                ></span>
+                <input
+                  readonly
+                  *ngIf="data.vigilante.estado === 1"
+                  matInput
+                  class="form_control"
+                  type="text"
+                  value="Vinculado"
+                />
+                <input
+                  readonly
+                  *ngIf="data.vigilante.estado === 0"
+                  matInput
+                  class="form_control"
+                  type="text"
+                  value="Desvinculado"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</mat-dialog-content>
+<!-- <hr />
+<div mat-dialog-actions align="end">
+  <div class="row text-right p-2">
+    <div class="col">
+      <button class="btn btn-usco-vt" mat-dialog-close> Cerrar</button>
+    </div>
+  </div>
+</div> -->

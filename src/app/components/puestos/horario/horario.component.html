@@ -1,0 +1,365 @@
+<app-navbar>
+  <div id="content-wrap" class="container mt-3 text-center mb-5">
+    <div class="card rounded-2 p-0 shadow-sm mt-5">
+      <div
+        class="card-header text-center ml-4 mr-4 cursor-select"
+        [routerLink]="['/puestos']"
+        routerLinkActive="router-link-active"
+        #target
+      >
+        <h4 class="font-usco-default">
+          <strong>Configuración horarios apertura y cierre</strong>
+        </h4>
+      </div>
+      <div class="card-body ls">
+        <div class="row">
+          <div class="col">
+            <form class="pl-4 pr-4" [formGroup]="formularioHorario">
+              <div class="row text-left mb-2">
+                <div class="col">
+                  <h6 class="font-usco-gr font-weight-bold">Ubicación:</h6>
+                </div>
+                <div class="col">
+                  <h6 class="font-usco-gr font-weight-bold" *ngIf="!editar">
+                    Días:
+                  </h6>
+                  <h6 class="font-usco-gr font-weight-bold" *ngIf="editar">
+                    Horario:
+                  </h6>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Sede</mat-label>
+                      <mat-select formControlName="sede" id="sede">
+                        <mat-option
+                          *ngFor="let sede of sedes"
+                          [value]="sede.codigo"
+                          (click)="buscarSubsede(sede.codigo)"
+                          >{{ sede.sedeNombre }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Sub - Sede</mat-label>
+                      <mat-select formControlName="subsede" id="subsede">
+                        <mat-option
+                          *ngFor="let subsede of subsedes"
+                          [value]="subsede.codigo"
+                          (click)="buscarBloque(subsede.codigo)"
+                          >{{ subsede.subSedeNombre }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <h6 class="font-usco-gr font-weight-bold text-left">
+                    Puesto:
+                  </h6>
+                  <div class="form-group" *ngIf="editar">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Tipo de puesto</mat-label>
+                      <mat-select formControlName="tipo" id="tipo">
+                        <mat-option
+                          *ngFor="let tipo of tipoPuesto"
+                          [value]="tipo.codigo"
+                          (click)="obtenerPuestoVigilanciaSubsedeTipo()"
+                          >{{ tipo.nombre }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="form-group" *ngIf="!editar">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Tipo de puesto</mat-label>
+                      <mat-select formControlName="tipo" id="tipo">
+                        <mat-option
+                          *ngFor="let tipo of tipoPuesto"
+                          [value]="tipo.codigo"
+                          (click)="
+                            obtenerPuestoVigilanciaSubsedeTipoHorarioCompleto()
+                          "
+                          >{{ tipo.nombre }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Puesto</mat-label>
+                      <mat-select formControlName="puesto" id="puesto">
+                        <mat-option
+                          *ngFor="let puesto of puestosFiltro"
+                          [value]="puesto.codigo"
+                          >{{ puesto.nombre }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="col font-usco-gr text-left">
+                  <div class="form-group" *ngIf="!editar">
+                    <!-- <mat-selection-list>
+                      <mat-list-option (click)="selectAll()">
+                        Todos los días
+                      </mat-list-option>
+                    </mat-selection-list> -->
+                    <mat-selection-list
+                      class="inline-list"
+                      #allSelected
+                      formControlName="dia"
+                      id="dia"
+                    >
+                      <mat-list-option
+                        *ngFor="let dia of dias"
+                        [value]="dia.codigo"
+                        (click)="agregarDia(dia)"
+                      >
+                        {{ dia.nombre }}
+                      </mat-list-option>
+                    </mat-selection-list>
+                  </div>
+                  <div class="form-group" *ngIf="editar">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Día</mat-label>
+                      <mat-select
+                        id="diaAuxiliar"
+                        formControlName="diaAuxiliar"
+                      >
+                        <mat-option
+                          *ngFor="let dia of dias"
+                          [value]="dia.codigo"
+                        >
+                          {{ dia.nombre }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="form-group" *ngIf="editar">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Apertura</mat-label>
+                      <mat-select formControlName="apertura" id="apertura">
+                        <mat-option
+                          *ngFor="let hora of horas; let i = index"
+                          [value]="hora.horaInicioNacional"
+                          (click)="correrHoras(i)"
+                          >{{ hora.horaInicioNacional }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="form-group" *ngIf="editar">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Cierre</mat-label>
+                      <mat-select formControlName="cierre" id="cierre">
+                        <mat-option
+                          *ngFor="let hora of horasCierre"
+                          [value]="hora.horaFinNacional"
+                          >{{ hora.horaFinNacional }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col" *ngIf="!editar">
+                  <h6 class="font-usco-gr font-weight-bold text-left">
+                    Horario:
+                  </h6>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col" *ngIf="!editar">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Apertura</mat-label>
+                      <mat-select formControlName="apertura" id="apertura">
+                        <mat-option
+                          *ngFor="let hora of horas; let i = index"
+                          [value]="hora.horaInicioNacional"
+                          (click)="correrHoras(i)"
+                          >{{ hora.horaInicioNacional }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="col" *ngIf="!editar">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Cierre</mat-label>
+                      <mat-select formControlName="cierre" id="cierre">
+                        <mat-option
+                          *ngFor="let hora of horasCierre"
+                          [value]="hora.horaFinNacional"
+                          >{{ hora.horaFinNacional }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col">
+                  <button
+                    class="btn btn-success mr-2"
+                    *ngIf="!editar"
+                    [disabled]="!formularioHorario.valid"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="guardar"
+                    (click)="generarHorario()"
+                  >
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar<i
+                      *ngIf="cargando"
+                      class="fas fa-spinner fa-pulse"
+                    ></i>
+                  </button>
+                  <button
+                    class="btn btn-success mr-2"
+                    *ngIf="editar"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="guardar"
+                    (click)="guardarHorario()"
+                  >
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar
+                    <i *ngIf="cargando" class="fas fa-spinner fa-pulse"></i>
+                  </button>
+                  <button
+                    *ngIf="editar && estado == 1"
+                    class="btn btn-danger mr-2"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="cancelar"
+                    (click)="desactivarHorario()"
+                  >
+                    <i class="fa-solid fa-ban"></i> Desactivar
+                  </button>
+                  <button
+                    *ngIf="editar && estado == 0"
+                    class="btn btn-info mr-2"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="cancelar"
+                    (click)="activarHorario()"
+                  >
+                    <i class="fa-solid fa-circle-check"></i> Activar
+                  </button>
+                  <button
+                    *ngIf="editar"
+                    class="btn btn-warning"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="cancelar"
+                    (click)="cancelar()"
+                  >
+                    <i class="fa-solid fa-xmark"></i> Cancelar
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col">
+            <table
+              mat-table
+              [dataSource]="dataSource"
+              class="table table-hover shadow"
+            >
+              <ng-container matColumnDef="index">
+                <th mat-header-cell *matHeaderCellDef>N°</th>
+                <td
+                  mat-cell
+                  *matCellDef="let element; let i = index"
+                  class="font-sm-usco"
+                >
+                  {{ dataSource.filteredData.indexOf(element) + 1 }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="sede">
+                <th mat-header-cell *matHeaderCellDef>Sede</th>
+                <td mat-cell *matCellDef="let element" class="font-sm-usco">
+                  {{ element.puestoVigilancia.sede.nombre }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="tipo">
+                <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                <td mat-cell *matCellDef="let element" class="font-sm-usco">
+                  {{ element.puestoVigilancia.tipoPuesto.nombre }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="puesto">
+                <th mat-header-cell *matHeaderCellDef>Puesto</th>
+                <td mat-cell *matCellDef="let element" class="font-sm-usco">
+                  {{ element.puestoVigilancia.nombre }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="dia">
+                <th mat-header-cell *matHeaderCellDef>Día</th>
+                <td mat-cell *matCellDef="let element" class="font-sm-usco">
+                  {{ element.dia.nombre }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="apertura">
+                <th mat-header-cell *matHeaderCellDef>Apertura</th>
+                <td mat-cell *matCellDef="let element" class="font-sm-usco">
+                  {{ element.horaApertura }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="cierre">
+                <th mat-header-cell *matHeaderCellDef>Cierre</th>
+                <td mat-cell *matCellDef="let element" class="font-sm-usco">
+                  {{ element.horaCierre }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="opciones">
+                <th mat-header-cell *matHeaderCellDef class="font-sm-usco">
+                  Estado / Opciones
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  <button
+                    class="btn btn btn-success btn-sm mr-2"
+                    *ngIf="element.estado === 1"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Activo"
+                  >
+                    <i class="fas fa-check-square"></i>
+                  </button>
+                  <button
+                    class="btn btn btn-secondary btn-sm mr-2"
+                    *ngIf="element.estado === 0"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Cerrado"
+                  >
+                    <i class="fas fa-minus-square"></i>
+                  </button>
+                  <button
+                    class="btn btn-usco-vt btn-sm"
+                    title="Ajustes"
+                    (click)="editarHorario(element); scrollToComponent(target)"
+                  >
+                    <i class="fa-solid fa-gear"></i>
+                  </button>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <mat-paginator
+              [pageSizeOptions]="[7, 14, 21]"
+              showFirstLastButtons
+            ></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-navbar>

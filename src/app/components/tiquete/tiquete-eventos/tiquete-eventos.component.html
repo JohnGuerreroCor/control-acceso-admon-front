@@ -1,0 +1,403 @@
+<app-navbar>
+  <div id="content-wrap" class="container mt-3 mb-5 text-center">
+    <div class="card rounded-2 p-0 shadow-sm mt-5">
+      <div
+        class="card-header ml-4 mb-3 mr-4 cursor-select"
+        [routerLink]="['/tiquetes']"
+      >
+        <h4 class="font-usco-default">
+          <strong>Tiquetes Eventos</strong>
+        </h4>
+      </div>
+      <div class="card-body ls">
+        <div class="row">
+          <div class="col">
+            <form class="pl-4 pr-4" [formGroup]="formularioTiquetesEvento">
+              <div class="row text-left mb-2">
+                <div class="col">
+                  <h6 class="font-usco-gr font-weight-bold">
+                    Formulario listado personas, lugar y fecha del evento:
+                  </h6>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col mt-3">
+                  <label class="file example-full-width">
+                    <input
+                      type="file"
+                      accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      (change)="onFileChange($event)"
+                      aria-label="File browser example"
+                    />
+                    <span class="file-custom text-left">{{ nameFile }}</span>
+                  </label>
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Sede</mat-label>
+                      <mat-select formControlName="sede" id="sede">
+                        <mat-option
+                          *ngFor="let sede of sedes"
+                          [value]="sede.codigo"
+                          (click)="buscarSubsede(sede.codigo)"
+                          >{{ sede.sedeNombre }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Sub - Sede</mat-label>
+                      <mat-select formControlName="subsede" id="subsede">
+                        <mat-option
+                          *ngFor="let subsede of subsedes"
+                          [value]="subsede.codigo"
+                          (click)="buscarBloque(subsede.codigo)"
+                          >{{ subsede.subSedeNombre }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="col" *ngIf="!ticket">
+                  <div class="form-group">
+                    <table class="table table-sm mt-3" style="border: none">
+                      <tbody style="border: none">
+                        <tr style="border: none">
+                          <td style="border: none; color: #8d8d8d">
+                            Lugar de visita: *
+                          </td>
+                          <td style="border: none">
+                            <mat-radio-group
+                              aria-label="Select an option"
+                              formControlName="tipoUbicacion"
+                              id="tipoUbicacion"
+                            >
+                              <mat-radio-button
+                                class="example-radio-button mr-4"
+                                value="1"
+                                >Bloque</mat-radio-button
+                              >
+                              <mat-radio-button
+                                class="example-radio-button"
+                                value="2"
+                                >Oficina</mat-radio-button
+                              >
+                            </mat-radio-group>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="col" *ngIf="ticket">
+                  <div class="form-group">
+                    <table class="table table-sm mt-3" style="border: none">
+                      <tbody style="border: none">
+                        <tr style="border: none">
+                          <td style="border: none; color: #8d8d8d">
+                            Lugar de visita: *
+                          </td>
+                          <td style="border: none">
+                            <mat-radio-group
+                              aria-label="Select an option"
+                              formControlName="tipoUbicacion"
+                              id="tipoUbicacion"
+                            >
+                              <mat-radio-button
+                                class="example-radio-button"
+                                value="1"
+                                >Bloque</mat-radio-button
+                              >
+                              <mat-radio-button
+                                class="example-radio-button"
+                                value="2"
+                                >Oficina</mat-radio-button
+                              >
+                            </mat-radio-group>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div
+                  class="col"
+                  *ngIf="
+                    formularioTiquetesEvento.get('tipoUbicacion')!.value === '1'
+                  "
+                >
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Bloque</mat-label>
+                      <mat-select formControlName="bloque" id="bloque">
+                        <mat-option
+                          *ngFor="let bloque of bloques"
+                          [value]="bloque.codigo"
+                          (click)="
+                            cargarLugar(bloque.bloqueNombre, bloque.codigo, 1)
+                          "
+                          >{{ bloque.bloqueNombre }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div
+                  class="col"
+                  *ngIf="
+                    formularioTiquetesEvento.get('tipoUbicacion')!.value === '2'
+                  "
+                >
+                  <mat-form-field class="example-full-width">
+                    <input
+                      type="text"
+                      formControlName="oficina"
+                      id="oficina"
+                      placeholder="Oficina"
+                      aria-label="Oficina"
+                      matInput
+                      [formControl]="myControl"
+                      [matAutocomplete]="auto"
+                    />
+                    <mat-autocomplete #auto="matAutocomplete">
+                      <mat-option
+                        *ngFor="let option of filteredOptions | async"
+                        [value]="option.uaaNombre"
+                        (click)="
+                          cargarLugar(option.uaaNombre, option.codigo, 2)
+                        "
+                      >
+                        {{ option.uaaNombre }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </div>
+                <div
+                  class="col-sm-3"
+                  *ngIf="
+                    formularioTiquetesEvento.get('tipoUbicacion')!.value ===
+                      '1' ||
+                    formularioTiquetesEvento.get('tipoUbicacion')!.value === '2'
+                  "
+                >
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Fecha de inicio</mat-label>
+                      <input
+                        matInput
+                        [matDatepicker]="picker1"
+                        (dateChange)="limiteVigencia()"
+                        [min]="fechaLimiteMinima"
+                        formControlName="fechaInicio"
+                        required
+                      />
+                      <mat-hint>Mes/Día/Año</mat-hint>
+                      <mat-datepicker-toggle
+                        matIconSuffix
+                        [for]="picker1"
+                      ></mat-datepicker-toggle>
+                      <mat-datepicker #picker1></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div
+                  class="col-sm-3"
+                  *ngIf="
+                    formularioTiquetesEvento.get('tipoUbicacion')!.value ===
+                      '1' ||
+                    formularioTiquetesEvento.get('tipoUbicacion')!.value === '2'
+                  "
+                >
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Fecha fin</mat-label>
+                      <input
+                        matInput
+                        [matDatepicker]="picker2"
+                        [min]="fechaLimiteMinimaVigencia"
+                        formControlName="fechaVigencia"
+                        required
+                      />
+                      <mat-hint>Mes/Día/Año</mat-hint>
+                      <mat-datepicker-toggle
+                        matIconSuffix
+                        [for]="picker2"
+                      ></mat-datepicker-toggle>
+                      <mat-datepicker #picker2></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row text-left mb-2">
+                <div class="col">
+                  <h6 class="font-usco-gr font-weight-bold">
+                    Persona a cargo del evento
+                    <span class="font-usco-vt"
+                      ><i
+                        class="fa-solid fa-circle-info cursor-select"
+                        (click)="informacion()"
+                      ></i
+                    ></span>
+                  </h6>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Documento de identidad</mat-label>
+                      <input
+                        matInput
+                        #input
+                        maxlength="16"
+                        type="text"
+                        formControlName="identificacion"
+                        id="identificacion"
+                        (keyup.enter)="buscarPersonaEvento()"
+                        required
+                      />
+                      <button
+                        matSuffix
+                        mat-icon-button
+                        (click)="buscarPersonaEvento()"
+                      >
+                        <mat-icon>search</mat-icon>
+                      </button>
+                      <mat-hint align="end"
+                        >{{ input.value.length }}/16</mat-hint
+                      >
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Nombres</mat-label>
+                      <input
+                        matInput
+                        formControlName="nombre"
+                        id="nombre"
+                        class="form_control"
+                        required
+                      />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Apellidos</mat-label>
+                      <input
+                        matInput
+                        class="form_control"
+                        formControlName="apellido"
+                        id="apellido"
+                        type="text"
+                        required
+                      />
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="col" *ngIf="ipuntEmailPersona">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Correo electrónico</mat-label>
+                      <input
+                        matInput
+                        class="form_control"
+                        type="text"
+                        formControlName="email"
+                        id="email"
+                        required
+                      />
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="col" *ngIf="!ipuntEmailPersona">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Correo electrónico</mat-label>
+                      <mat-select formControlName="email" id="email" required>
+                        <mat-option
+                          *ngFor="let email of emails"
+                          [value]="email"
+                          >{{ email }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="row">
+              <div class="col">
+                <button
+                  class="btn btn-usco-vt"
+                  (click)="verValores()"
+                  [disabled]="!formularioTiquetesEvento.valid"
+                >
+                  <i class="fa-solid fa-file-arrow-up"></i> Cargar personas
+                </button>
+              </div>
+            </div>
+            <br /><br />
+            <div class="row align-items-center" *ngIf="logo">
+              <div class="col">
+                <img
+                  src="../assets/precarga-usco.gif"
+                  class="img-fluid"
+                  alt="USCO"
+                />
+              </div>
+            </div>
+            <div class="row" *ngIf="(personas | json) != '[]' && !logo">
+              <div class="col">
+                <table class="table table-striped table-hover">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th colspan="6">
+                        Listado Personas Invitadas al Evento -
+                        {{ personas.length }}
+                      </th>
+                    </tr>
+                    <tr class="text-left" style="font-size: 13px">
+                      <th>N°</th>
+                      <th>Documento</th>
+                      <th>Identificiacion</th>
+                      <th>Nombre</th>
+                      <th>Apellido</th>
+                      <th>Correo</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-left">
+                    <tr
+                      *ngFor="let persona of personas; let i = index"
+                      style="font-size: 12px"
+                    >
+                      <td>{{ i + 1 }}</td>
+                      <td>{{ persona.Documento }}</td>
+                      <td>{{ persona.Identificacion }}</td>
+                      <td>{{ persona.Nombre }}</td>
+                      <td>{{ persona.Apellido }}</td>
+                      <td>{{ persona.Correo }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-navbar>

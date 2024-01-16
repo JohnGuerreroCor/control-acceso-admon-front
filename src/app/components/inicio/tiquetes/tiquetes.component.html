@@ -1,0 +1,110 @@
+<app-navbar>
+  <div class="container p-4">
+    <div class="row">
+      <div class="col-sm-6 m-sm-auto">
+        <div
+          class="card mb-3 cursor-select card-usco-menu shadow"
+          [routerLink]="['/tiquete-invitados']"
+        >
+          <div class="row">
+            <div class="col-md-4 text-center">
+              <img
+                class="rounded w-100 p-3 shadow filter-green"
+                src="assets/users-rectangle-solid.png"
+              />
+            </div>
+            <div class="col-md-8 mt-3 text-left p-0">
+              <div class="card-block pr-4">
+                <h6
+                  class="card-title text-left font-usco-vt font-weight-bold cursor-select"
+                >
+                  Invitados
+                </h6>
+                <p style="font-size: 11px">
+                  Registro, actualización de correo, generación de tiquete de
+                  acceso, asignación de foto y parametrización con fecha de
+                  ingreso y salida de los invitados que tenga la institución.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="card mb-3 cursor-select card-usco-menu shadow"
+          [routerLink]="['/tiquete-visitantes']"
+        >
+          <div class="row">
+            <div class="col-md-4 text-center">
+              <img
+                class="rounded w-100 p-3 shadow filter-green"
+                src="assets/users-solid.png"
+              />
+            </div>
+            <div class="col-md-8 mt-3 text-left p-0">
+              <div class="card-block pr-4">
+                <h6
+                  class="card-title text-left font-usco-vt font-weight-bold cursor-select"
+                >
+                  Visitantes
+                </h6>
+                <p style="font-size: 11px">
+                  Registro, actualización de correo, generación de tiquete de
+                  acceso con una vigencia de 24 horas.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="card mb-3 cursor-select card-usco-menu shadow"
+          [routerLink]="['/tiquete-eventos']"
+        >
+          <div class="row">
+            <div class="col-md-4 text-center">
+              <img
+                class="rounded w-100 p-3 shadow filter-green"
+                src="assets/people-group-solid.png"
+              />
+            </div>
+            <div class="col-md-8 mt-3 text-left p-0">
+              <div class="card-block pr-4">
+                <h6
+                  class="card-title text-left font-usco-vt font-weight-bold cursor-select"
+                >
+                  Eventos
+                </h6>
+                <p style="font-size: 11px">
+                  Registro y generación masiva de tiquetes de acceso con una
+                  vigencia de 24 horas para eventos Institucionales.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="card mb-2 cursor-select card-usco-menu shadow"
+          [routerLink]="['/inicio']"
+        >
+          <div class="row">
+            <div class="col-md-4 text-center">
+              <img
+                class="rounded w-100 p-3 shadow filter-green"
+                src="assets/house-solid.png"
+              />
+            </div>
+            <div class="col-md-8 mt-3 text-left p-0">
+              <div class="card-block pr-4">
+                <h6
+                  class="card-title text-left font-usco-vt font-weight-bold cursor-select"
+                >
+                  Inicio
+                </h6>
+                <p style="font-size: 11px">Volver al menú inicial</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-navbar>

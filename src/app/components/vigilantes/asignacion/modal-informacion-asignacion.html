@@ -1,0 +1,200 @@
+<div mat-dialog-title>
+  <div class="row">
+    <div class="col">
+      <h4 class="font-usco-vt font-weight-bold">
+        <i class="fa-solid fa-circle-info"></i> Información Complementaria
+      </h4>
+    </div>
+    <div class="col text-right font-usco-vt font-weight-bold">
+      <i class="fa-solid fa-xmark" mat-dialog-close></i>
+    </div>
+  </div>
+</div>
+<hr />
+<mat-dialog-content>
+  <div class="row">
+    <div class="col">
+      <form class="pl-4 pr-4">
+        <div class="row text-left mb-2">
+          <div class="col">
+            <h6 class="font-usco-vt font-weight-bold">Puesto:</h6>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <mat-form-field class="example-full-width">
+                <mat-label>Sede</mat-label>
+                <input
+                  readonly
+                  matInput
+                  class="form_control"
+                  type="text"
+                  value="{{data.asignacion.sede}}"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <mat-form-field class="example-full-width">
+                <mat-label>Sub - Sede</mat-label>
+                <input
+                  readonly
+                  matInput
+                  class="form_control"
+                  type="text"
+                  value="{{data.asignacion.subsede}}"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <mat-form-field class="example-full-width">
+                <mat-label>Tipo de puesto</mat-label>
+                <input
+                  readonly
+                  matInput
+                  class="form_control"
+                  type="text"
+                  value="{{data.asignacion.tipoPuesto}}"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <mat-form-field class="example-full-width">
+                <mat-label>Nombre del puesto</mat-label>
+                <input
+                  readonly
+                  matInput
+                  class="form_control"
+                  type="text"
+                  value="{{data.asignacion.nombrePuesto}}"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <mat-form-field class="example-full-width">
+              <mat-label>Bloque</mat-label>
+              <input
+                readonly
+                matInput
+                class="form_control"
+                type="text"
+                value="{{data.asignacion.bloque}}"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <mat-form-field class="example-full-width">
+                <mat-label>Cupos Vigilantes</mat-label>
+                <input
+                  readonly
+                  matInput
+                  class="form_control"
+                  type="text"
+                  value="{{data.asignacion.cupoVigilante}}"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <mat-form-field class="example-full-width">
+                <mat-label>Vigilantes asignados</mat-label>
+                <input
+                  readonly
+                  matInput
+                  class="form_control"
+                  type="text"
+                  value="{{data.asignacion.asignados}}"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <mat-form-field class="example-full-width">
+                <span
+                  matPrefix
+                  class="btn btn-success mr-2 btn-sm"
+                  *ngIf="data.asignacion.estado === 1"
+                  ><i class="fa-solid fa-check"></i
+                ></span>
+                <span
+                  matPrefix
+                  class="btn btn-danger mr-2 btn-sm"
+                  *ngIf="data.asignacion.estado === 0"
+                  ><i class="fa-solid fa-xmark"></i
+                ></span>
+                <input
+                  readonly
+                  *ngIf="data.asignacion.estado === 1"
+                  matInput
+                  class="form_control"
+                  type="text"
+                  value="Activo"
+                />
+                <input
+                  readonly
+                  *ngIf="data.asignacion.estado === 0"
+                  matInput
+                  class="form_control"
+                  type="text"
+                  value="Cerrado"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="row text-left mb-2">
+          <div class="col">
+            <h6 class="font-usco-vt font-weight-bold">Vigilantes:</h6>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col">
+            <table class="table table-striped shadow">
+              <thead class="thead-dark text-justify">
+                <tr style="font-size: 13px">
+                  <th class="text-center">N°</th>
+                  <th>Vigilante</th>
+                  <th>Observación</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let item of asignaciones; let i = index"
+                  style="font-size: 12px"
+                >
+                  <td class="text-center">{{i+1}}</td>
+                  <td>{{item.vigilante.nombre}} {{item.vigilante.apellido}}</td>
+                  <td>{{item.observacion}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</mat-dialog-content>
+<!-- <hr />
+<div mat-dialog-actions align="end">
+  <div class="row text-right p-2">
+    <div class="col">
+      <button class="btn btn-usco-vt" mat-dialog-close> Cerrar</button>
+    </div>
+  </div>
+</div> -->

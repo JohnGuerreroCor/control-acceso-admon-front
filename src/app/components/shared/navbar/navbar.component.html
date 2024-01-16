@@ -1,0 +1,250 @@
+<mat-sidenav-container class="sidenav-container" id="page-container">
+  <mat-sidenav
+    #drawer
+    style="width: 281px"
+    *ngIf="navbarHiddenService.visibleSideBar"
+    class="sidenav"
+    fixedInViewport
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false"
+    #target
+  >
+    <mat-toolbar>
+      <span class="logo-lg"
+        ><b
+          ><img
+            class="img-fluid"
+            src="assets/universidad-surcolombiana-multicampos-white.png" /></b
+      ></span>
+    </mat-toolbar>
+    <mat-nav-list>
+      <a class="list" mat-list-item [routerLink]="['/inicio']">
+        <h6 class="pl-2 item-principal"><i class="fas fa-home"></i> Inicio</h6>
+      </a>
+    </mat-nav-list>
+    <mat-accordion>
+      <mat-expansion-panel
+        class="sidenav"
+        style="width: 280px"
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header class="disable_ripple specific-class">
+          <mat-panel-title>
+            <h6 class="text-white mt-2">
+              <i class="fa-solid fa-tower-observation"></i> Puesto vigilancia
+            </h6>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <a
+            class="sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/puesto']"
+            routerLinkActive="router-link-active"
+          >
+            <h6 class="text-white pl-5">
+              <i class="fa-solid fa-location-pin"></i> Puesto
+            </h6>
+          </a>
+          <a
+            class="sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/horarios']"
+            routerLinkActive="router-link-active"
+          >
+            <h6 class="text-white pl-5">
+              <i class="fa-solid fa-clock"></i> Horarios
+            </h6>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <mat-accordion>
+      <mat-expansion-panel
+        class="sidenav"
+        style="width: 280px"
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header class="disable_ripple specific-class">
+          <mat-panel-title>
+            <h6 class="text-white mt-2">
+              <i class="fa-solid fa-user-shield"></i> Vigilantes
+            </h6>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <a
+            class="sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/vigilante']"
+            routerLinkActive="router-link-active"
+          >
+            <h6 class="text-white pl-5">
+              <i class="fa-solid fa-user-pen"></i> Registrar Vigilante
+            </h6>
+          </a>
+          <a
+            class="sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/asignacion']"
+            routerLinkActive="router-link-active"
+          >
+            <h6 class="text-white pl-5">
+              <i class="fa-solid fa-building-shield"></i> Asignar Puesto
+            </h6>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <mat-accordion>
+      <mat-expansion-panel
+        class="sidenav"
+        style="width: 280px"
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header class="disable_ripple specific-class">
+          <mat-panel-title>
+            <h6 class="text-white mt-2">
+              <i class="fa-solid fa-ticket"></i> Tiquetes
+            </h6>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <a
+            class="sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/tiquete-invitados']"
+            routerLinkActive="router-link-active"
+          >
+            <h6 class="text-white pl-5">
+              <i class="fa-solid fa-users-rectangle"></i> Invitados
+            </h6>
+          </a>
+          <a
+            class="sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/tiquete-visitantes']"
+            routerLinkActive="router-link-active"
+          >
+            <h6 class="text-white pl-5">
+              <i class="fa-solid fa-users"></i> Visitantes
+            </h6>
+          </a>
+          <a
+            class="sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/tiquete-eventos']"
+            routerLinkActive="router-link-active"
+          >
+            <h6 class="text-white pl-5">
+              <i class="fa-solid fa-people-group"></i> Eventos
+            </h6>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <mat-nav-list>
+      <a
+        class="list"
+        mat-list-item
+        [routerLink]="['/reportes']"
+        routerLinkActive="router-link-active"
+      >
+        <h6 class="pl-2 item-principal">
+          <i class="fa-solid fa-chart-simple"></i> Reportes
+        </h6>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content (validarToken)="receiveMessage($event)">
+    <mat-toolbar *ngIf="rol != ''" class="toolbar">
+      <button
+        type="button"
+        class="btn btn-usco-vt m-1 text-white"
+        aria-label="Toggle sidenav"
+        (click)="toggle()"
+        *ngIf="isHandset$"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+      <h6
+        *ngIf="navbarHiddenService.visibleSideBar == true"
+        class="font-weight-bold"
+      >
+        Administrador Control de Acceso
+      </h6>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle text-white"
+            id="navbarDropdownMenu"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <img
+              *ngIf="foto.url != ''"
+              src="{{ foto.url }}"
+              width="40"
+              height="40"
+              class="rounded-circle d-inline-block align-top"
+              alt="avatar image"
+            />
+            <img
+              *ngIf="foto.url == ''"
+              src="assets/precarga-usco-dos.gif"
+              width="40"
+              height="40"
+              class="rounded-circle d-inline-block align-top"
+              alt="avatar image"
+            />
+            {{ nombre | titlecase }} {{ apellido | titlecase }}</a
+          >
+          <div
+            class="dropdown-menu dropdown-menu-right dropdown-info"
+            aria-labelledby="navbarDropdownMenu"
+            id="gradiante"
+          >
+            <div class="text-center">
+              <a class="dropdown-info"
+                ><img
+                  src="{{ foto.url }}"
+                  class="rounded-circle z-depth-0 border-usco-white"
+                  alt="avatar image"
+                  height="100"
+              /></a>
+              <a class="dropdown-item font-usco-default"
+                ><b> {{ nombre | titlecase }} {{ apellido | titlecase }}</b></a
+              >
+              <a class="dropdown-item font-usco-default">{{
+                uaa | titlecase
+              }}</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown"
+                ><button
+                  (click)="logout()"
+                  class="btn btn-usco-vt"
+                  type="button"
+                >
+                  Cerrar Sesión
+                </button></a
+              >
+            </div>
+          </div>
+        </li>
+      </ul>
+    </mat-toolbar>
+    <ng-content (validarToken)="receiveMessage($event)"></ng-content>
+  </mat-sidenav-content>
+</mat-sidenav-container>

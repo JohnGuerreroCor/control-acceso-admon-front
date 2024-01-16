@@ -1,0 +1,394 @@
+<app-navbar>
+  <div id="content-wrap" class="container mt-3 text-center mb-5">
+    <div class="card rounded-2 p-0 shadow-sm mt-5">
+      <div
+        class="card-header text-center ml-4 mr-4 cursor-select"
+        [routerLink]="['/vigilantes']"
+        routerLinkActive="router-link-active"
+      >
+        <h4 class="font-usco-default" #target>
+          <strong>Asiganción Vigilantes</strong>
+        </h4>
+      </div>
+      <div class="card-body ls">
+        <div class="row">
+          <div class="col">
+            <form class="pl-4 pr-4" [formGroup]="formularioAsignacion">
+              <div class="row text-left mb-2">
+                <div class="col">
+                  <h6 class="font-usco-gr font-weight-bold">
+                    Vigilantes por puntos de acceso:
+                  </h6>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Sede</mat-label>
+                      <mat-select formControlName="sede" id="sede">
+                        <mat-option
+                          *ngFor="let sede of sedes"
+                          [value]="sede.codigo"
+                          (click)="buscarSubsede(sede.codigo)"
+                          >{{ sede.sedeNombre }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Sub - Sede</mat-label>
+                      <mat-select formControlName="subsede" id="subsede">
+                        <mat-option
+                          *ngFor="let subsede of subsedes"
+                          [value]="subsede.codigo"
+                          >{{ subsede.subSedeNombre }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Tipo de puesto</mat-label>
+                      <mat-select formControlName="tipo" id="tipo">
+                        <mat-option
+                          *ngFor="let tipo of tipoPuesto"
+                          [value]="tipo.codigo"
+                          (click)="obtenerPuestoVigilanciaSubsedeTipo()"
+                          >{{ tipo.nombre }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                    <mat-form-field class="example-full-width">
+                      <mat-label>Puesto</mat-label>
+                      <mat-select formControlName="puesto" id="puesto">
+                        <mat-option
+                          *ngFor="let puesto of puestosFiltro"
+                          [value]="puesto.codigo"
+                          (click)="generarCuposVigilantes(puesto)"
+                          >{{ puesto.nombre }}</mat-option
+                        >
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="row" *ngIf="tablaCupos">
+                <div class="col">
+                  <form #forma="ngForm">
+                    <table class="table table-hover shadow">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th colspan="5">
+                            {{ nombrePuesto | titlecase }} | Cupo Máximo:
+                            {{ cupoMaximo }}
+                          </th>
+                        </tr>
+                        <tr style="font-size: 13px">
+                          <th class="text-center">N°</th>
+                          <th>Vigilantes</th>
+                          <th>Observación</th>
+                          <th>Acción</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          *ngFor="
+                            let field of asignacion.fieldArray;
+                            let i = index
+                          "
+                        >
+                          <td class="text-center">{{ i + 1 }}</td>
+                          <td>
+                            <mat-form-field
+                              class="example-full-width"
+                              style="padding: 0; margin: 0"
+                            >
+                              <mat-label>Vigilante {{ i + 1 }}</mat-label>
+                              <mat-select
+                                [(ngModel)]="field.vigilante"
+                                name="{{ field.vigilante }}"
+                                style="padding: 0; margin: 0"
+                                disabled
+                              >
+                                <mat-option
+                                  *ngFor="let vigilante of vigilanteSeleccion"
+                                  [value]="vigilante.codigo"
+                                  >{{ vigilante.nombre }}
+                                  {{ vigilante.apellido }}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </td>
+                          <td>
+                            <mat-form-field
+                              class="example-full-width"
+                              style="padding: 0; margin: 0"
+                            >
+                              <textarea
+                                readonly
+                                [(ngModel)]="field.observacion"
+                                name="{{ field.observacion }}"
+                                rows="1"
+                                matInput
+                                placeholder="Observación"
+                              ></textarea>
+                            </mat-form-field>
+                          </td>
+                          <td>
+                            <button
+                              *ngIf="editar"
+                              class="btn btn-usco-vt btn-sm"
+                              type="button"
+                              (click)="
+                                deleteFieldValue(i, field.vigilante);
+                                desvincularVigilante(field)
+                              "
+                              placement="top"
+                              ngbTooltip="Borrar"
+                            >
+                              <i class="far fa-trash-alt"></i>
+                            </button>
+                            <button
+                              *ngIf="!editar"
+                              class="btn btn-usco-vt btn-sm"
+                              type="button"
+                              (click)="deleteFieldValue(i, field.vigilante)"
+                              placement="top"
+                              ngbTooltip="Borrar"
+                            >
+                              <i class="far fa-trash-alt"></i>
+                            </button>
+                          </td>
+                        </tr>
+                        <tr *ngIf="asignacion.fieldArray.length < cupoMaximo">
+                          <td class="text-center">
+                            <button class="btn btn-secondary btn-sm mt-2">
+                              # {{ asignacion.fieldArray.length + 1 }}
+                            </button>
+                          </td>
+                          <td>
+                            <mat-form-field
+                              class="example-full-width"
+                              style="padding: 0; margin: 0"
+                            >
+                              <mat-label>Seleccione el vigilante</mat-label>
+                              <mat-select
+                                id="newAttributeVigilante"
+                                [(ngModel)]="newAttribute.vigilante"
+                                name="newAttributeVigilante"
+                                style="padding: 0; margin: 0"
+                              >
+                                <mat-option
+                                  *ngFor="let vigilante of vigilantes"
+                                  [value]="vigilante.codigo"
+                                  >{{ vigilante.nombre }}
+                                  {{ vigilante.apellido }}</mat-option
+                                >
+                              </mat-select>
+                            </mat-form-field>
+                          </td>
+                          <td>
+                            <mat-form-field
+                              class="example-full-width"
+                              style="padding: 0; margin: 0"
+                            >
+                              <textarea
+                                id="newAttributeObservacion"
+                                [(ngModel)]="newAttribute.observacion"
+                                name="newAttributeObservacion"
+                                rows="1"
+                                matInput
+                                placeholder="Observación"
+                              ></textarea>
+                            </mat-form-field>
+                          </td>
+                          <td>
+                            <button
+                              *ngIf="editar"
+                              class="btn btn-success btn-sm mt-2"
+                              type="button"
+                              (click)="
+                                agregarVigilante();
+                                vincularVigilante(
+                                  asignacion,
+                                  asignacion.fieldArray.length - 1
+                                )
+                              "
+                              placement="top"
+                              ngbTooltip="Agregar"
+                            >
+                              <i class="fas fa-plus-circle"></i>
+                            </button>
+                            <button
+                              *ngIf="!editar"
+                              class="btn btn-success btn-sm mt-2"
+                              type="button"
+                              (click)="agregarVigilante()"
+                              placement="top"
+                              ngbTooltip="Agregar"
+                            >
+                              <i class="fas fa-plus-circle"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </form>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col">
+                  <button
+                    *ngIf="!editar"
+                    class="btn btn-usco-vt mr-2"
+                    [disabled]="!formularioAsignacion.valid"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="guardar"
+                    (click)="generarAsignacion()"
+                  >
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar
+                  </button>
+                  <button
+                    *ngIf="editar"
+                    class="btn btn-usco-vt"
+                    [disabled]="!formularioAsignacion.valid"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="cancelar"
+                    (click)="cancelar()"
+                  >
+                    <i class="fa-solid fa-xmark"></i> Cancelar
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="row text-left mt-5">
+          <div class="col">
+            <h6 class="font-usco-gr font-weight-bold">
+              Puestos según la relación de cupos y asignación de vigilantes:
+            </h6>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col">
+            <table
+              mat-table
+              [dataSource]="dataSource"
+              class="table table-hover shadow"
+            >
+              <ng-container matColumnDef="index">
+                <th mat-header-cell *matHeaderCellDef>N°</th>
+                <td
+                  mat-cell
+                  *matCellDef="let element; let i = index"
+                  class="font-sm-usco"
+                >
+                  {{ dataSource.filteredData.indexOf(element) + 1 }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="sede">
+                <th mat-header-cell *matHeaderCellDef>Sede</th>
+                <td mat-cell *matCellDef="let element" class="font-sm-usco">
+                  {{ element.sede }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="subsede">
+                <th mat-header-cell *matHeaderCellDef>SubSede</th>
+                <td mat-cell *matCellDef="let element" class="font-sm-usco">
+                  {{ element.subsede }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="tipo">
+                <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                <td mat-cell *matCellDef="let element" class="font-sm-usco">
+                  {{ element.tipoPuesto }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="nombre">
+                <th mat-header-cell *matHeaderCellDef>Puesto</th>
+                <td mat-cell *matCellDef="let element" class="font-sm-usco">
+                  {{ element.nombrePuesto }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="vigilantes">
+                <th mat-header-cell *matHeaderCellDef>Cupos</th>
+                <td mat-cell *matCellDef="let element" class="font-sm-usco">
+                  {{ element.cupoVigilante }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="asignados">
+                <th mat-header-cell *matHeaderCellDef>Asignados</th>
+                <td mat-cell *matCellDef="let element" class="font-sm-usco">
+                  {{ element.asignados }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="informacion">
+                <th mat-header-cell *matHeaderCellDef class="font-sm-usco">
+                  Estado / Opciones
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  <button
+                    class="btn btn btn-success btn-sm mr-2"
+                    *ngIf="element.estado === 1"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Activo"
+                  >
+                    <i class="fas fa-check-square"></i>
+                  </button>
+                  <button
+                    class="btn btn btn-secondary btn-sm mr-2"
+                    *ngIf="element.estado === 0"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Cerrado"
+                  >
+                    <i class="fas fa-minus-square"></i>
+                  </button>
+                  <button
+                    class="btn btn-primary btn-sm mr-2"
+                    title="Información (click)"
+                    (click)="openDialog(element)"
+                  >
+                    <i class="fa-solid fa-circle-info"></i>
+                  </button>
+                  <button
+                    class="btn btn-usco-vt btn-sm"
+                    (click)="
+                      editarAsignacion(element); scrollToComponent(target)
+                    "
+                    title="Ajustes (click)"
+                  >
+                    <i class="fa-solid fa-sliders"></i>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <mat-paginator
+              [pageSizeOptions]="[10, 20, 30]"
+              showFirstLastButtons
+            ></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-navbar>
