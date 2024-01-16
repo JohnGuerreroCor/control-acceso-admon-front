@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
   //DESCOMENTAR LOCAL
-  URL_BACKEND : "http://localhost:8080/puesto-vigilancia-administrador-1.0",
+  URL_BACKEND : "http://localhost:8080/control-acceso-admon-1.0",
   //DESCOMENTAR PRODUCCIÓN
   //URL_BACKEND: 'https://sanagustin.usco.edu.co/control_acceso_admon',
 
