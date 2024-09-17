@@ -1,82 +1,20 @@
 <app-navbar>
   <div class="container p-5">
-    <div class="row mt-4">
-      <div class="col-sm-6 m-sm-auto">
+    <div class="row row-cols-1 row-cols-md-3">
+      <div class="col mb-4" *ngFor="let link of links">
         <div
-          class="card mb-2 cursor-select card-usco-menu shadow"
-          [routerLink]="['/vigilante']"
+          class="card h-100 cursor-select card-usco-menu shadow"
+          [routerLink]="link.ruta"
+          #tooltip="matTooltip"
+          [matTooltip]="link.info"
+          matTooltipPosition="below"
         >
-          <div class="row">
-            <div class="col-md-4 text-center">
-              <img
-                class="rounded w-100 p-3 shadow filter-green"
-                src="assets/user-pen-solid.png"
-              />
-            </div>
-            <div class="col-md-8 mt-3 text-left p-0">
-              <div class="card-block pr-4">
-                <h6
-                  class="card-title text-left font-usco-vt font-weight-bold cursor-select"
-                >
-                  Registrar Vigilante
-                </h6>
-                <p style="font-size: 12px">
-                  Registro y actualización de los vigilantes que conforman el
-                  equipo de seguirdad de la institución.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="card mb-2 cursor-select card-usco-menu shadow"
-          [routerLink]="['/asignacion']"
-        >
-          <div class="row">
-            <div class="col-md-4 text-center">
-              <img
-                class="rounded w-100 p-3 shadow filter-green"
-                src="assets/building-shield-solid.png"
-              />
-            </div>
-            <div class="col-md-8 mt-3 text-left p-0">
-              <div class="card-block pr-4">
-                <h6
-                  class="card-title text-left font-usco-vt font-weight-bold cursor-select"
-                >
-                  Asignar Vigilante a Puesto
-                </h6>
-                <p style="font-size: 12px">
-                  Registrar y actualizar los vigilantes que van a pertenecer a
-                  cada uno de los puestos de control de acceso de la
-                  institución.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="card mb-2 cursor-select card-usco-menu shadow"
-          [routerLink]="['/inicio']"
-        >
-          <div class="row">
-            <div class="col-md-4 text-center">
-              <img
-                class="rounded w-100 p-3 shadow filter-green"
-                src="assets/house-solid.png"
-              />
-            </div>
-            <div class="col-md-8 mt-3 text-left p-0">
-              <div class="card-block pr-4">
-                <h6
-                  class="card-title text-left font-usco-vt font-weight-bold cursor-select"
-                >
-                  Inicio
-                </h6>
-                <p style="font-size: 12px">Volver al menú inicial</p>
-              </div>
-            </div>
-          </div>
+          <h5
+            class="card-header pt-3 text-center font-usco-vt font-weight-bold"
+          >
+            {{ link.titulo }}
+          </h5>
+          <i class="{{ link.icono }}"></i>
         </div>
       </div>
     </div>

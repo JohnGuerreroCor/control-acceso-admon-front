@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 import { NavbarHiddenService } from 'src/app/services/navbar-hidden.service';
 import { FotoService } from 'src/app/services/foto.service';
 import { FotoAntigua } from '../../../models/foto-antigua';
-import swal from 'sweetalert2';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-navbar',
@@ -16,18 +16,21 @@ import swal from 'sweetalert2';
   styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent implements OnInit {
-  public perCodigo: any = this.auth.user.per_codigo;
-  public perCodigoAntigua: any = '' + this.auth.user.per_codigo;
-  public nombre: any = this.auth.user.nombre;
-  public apellido: any = this.auth.user.apellido;
-  public uaa: any = this.auth.user.uaa;
+  public nombre: any = this.auth.user.personaNombre;
+  public apellido: any = this.auth.user.personaApellido;
+  public uaa: any = this.auth.user.uaaNombre;
   public roles: any[] = this.auth.user.roles;
+  public horaInicioSesion: any = this.auth.user.horaInicioSesion;
+  public horaFinSesion: any = this.auth.user.horaInicioSesion;
   public rol: any = this.roles.toString();
+  panelAbierto: string | null = null;
   url: any = environment.URL_BACKEND;
   panelOpenState = false;
   foto: FotoAntigua = {
     url: '',
   };
+  anio = new Date();
+  private fotoLoaded = false; // Variable para controlar si la foto se ha cargado
 
   isHandset$: Observable<any> = this.breakpointObserver
     .observe(Breakpoints.Handset)
@@ -42,25 +45,54 @@ export class NavbarComponent implements OnInit {
     private router: Router,
     public navbarHiddenService: NavbarHiddenService,
     public fotoService: FotoService
-  ) {
-    this.fotoService.mirarFoto('' + this.perCodigo).subscribe((data) => {
-      var gg = new Blob([data], { type: 'application/json' });
-      if (gg.size !== 4) {
-        var blob = new Blob([data], { type: 'image/png' });
-        const foto = blob;
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.foto.url = reader.result as string;
-        };
-        reader.readAsDataURL(foto);
-      } else {
-        this.fotoService
-          .mirarFotoAntigua('' + this.perCodigo)
-          .subscribe((data) => {
-            this.foto = data;
-          });
-      }
-    });
+  ) {}
+
+  ngOnInit() {
+    this.loadFoto();
+    // Convertir la cadena de horaInicioSesion a un objeto de fecha
+    let horaInicioSesionDate = new Date(this.horaInicioSesion + 'Z');
+
+    // Sumar dos horas a la hora de inicio de sesión
+    horaInicioSesionDate.setHours(horaInicioSesionDate.getHours() + 4);
+
+    // Convertir la nueva hora a una cadena en el mismo formato
+    this.horaFinSesion = horaInicioSesionDate
+      .toISOString()
+      .slice(0, 19)
+      .replace('T', ' ');
+
+    let finSesion = new Date(this.horaFinSesion);
+
+    // Calcular la diferencia en milisegundos entre la hora de fin de sesión y la hora actual
+    let diferenciaTiempo = finSesion.getTime() - Date.now();
+
+    // Si faltan 10 minutos o menos para la hora de fin de sesión, mostrar SweetAlert
+    if (diferenciaTiempo <= 10 * 60 * 1000) {
+      // 10 minutos en milisegundos
+      Swal.fire({
+        title: '¡Atención!',
+        text: 'Tu sesión está a punto de terminar.',
+        icon: 'warning',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#8f141b',
+        timer: 5000, // Mostrar alerta durante 5 segundos
+        timerProgressBar: true,
+        allowOutsideClick: false,
+      }).then((result) => {
+        if (result.dismiss === Swal.DismissReason.timer) {
+          // Cerrar sesión si se confirma o si se agota el tiempo del timer
+          this.logout();
+        }
+      });
+    }
+  }
+
+  togglePanel(panelId: string): void {
+    if (this.panelAbierto === panelId) {
+      this.panelAbierto = null;
+    } else {
+      this.panelAbierto = panelId;
+    }
   }
 
   receiveMessage($event: any) {
@@ -69,15 +101,15 @@ export class NavbarComponent implements OnInit {
 
   logout(): void {
     this.auth.logout();
-    const Toast = swal.mixin({
+    const Toast = Swal.mixin({
       toast: true,
       position: 'top-end',
       showConfirmButton: false,
       timer: 3000,
       timerProgressBar: true,
       didOpen: (toast) => {
-        toast.addEventListener('mouseenter', swal.stopTimer);
-        toast.addEventListener('mouseleave', swal.resumeTimer);
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
       },
     });
 
@@ -88,7 +120,33 @@ export class NavbarComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  ngOnInit() {}
+  loadFoto() {
+    if (!this.fotoLoaded) {
+      // Verificar si la foto ya se ha cargado
+      this.fotoService
+        .mirarFoto('' + this.auth.user.personaCodigo)
+        .subscribe((data) => {
+          var gg = new Blob([data], { type: 'application/json' });
+          if (gg.size !== 4) {
+            var blob = new Blob([data], { type: 'image/png' });
+            const foto = blob;
+            const reader = new FileReader();
+            reader.onload = () => {
+              this.foto.url = reader.result as string;
+            };
+            reader.readAsDataURL(foto);
+          } else {
+            this.fotoService
+              .mirarFotoAntigua('' + this.auth.user.personaCodigo)
+              .subscribe((data) => {
+                this.foto = data;
+              });
+          }
+        });
+
+      this.fotoLoaded = true; // Marcar que la foto se ha cargado
+    }
+  }
 
   toggle() {
     this.navbarHiddenService.toggleSideBar();

@@ -54,6 +54,7 @@ export class PuestoVigilanciaComponent implements OnInit {
   //Complementos
 
   tipo!: String;
+  alert: boolean = true;
 
   dataSource = new MatTableDataSource<any>([]);
   displayedColumns: string[] = [
@@ -63,6 +64,7 @@ export class PuestoVigilanciaComponent implements OnInit {
     'nombre',
     'tipo',
     'vigilantes',
+    'fecha',
     'informacion',
   ];
   @ViewChild(MatPaginator, { static: false })
@@ -99,6 +101,9 @@ export class PuestoVigilanciaComponent implements OnInit {
   }
 
   ngOnInit() {
+    setTimeout(() => {
+      this.alert = false;
+    }, 9000);
     this.crearFormularioTercero();
     this.formularioPuestoVigilancia
       .get('nombre')!

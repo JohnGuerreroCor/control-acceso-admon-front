@@ -29,6 +29,8 @@
         style="width: 280px"
         (opened)="panelOpenState = true"
         (closed)="panelOpenState = false"
+        (opened)="togglePanel('panel1')"
+        [expanded]="panelAbierto === 'panel1'"
       >
         <mat-expansion-panel-header class="disable_ripple specific-class">
           <mat-panel-title>
@@ -69,6 +71,8 @@
         style="width: 280px"
         (opened)="panelOpenState = true"
         (closed)="panelOpenState = false"
+        (opened)="togglePanel('panel2')"
+        [expanded]="panelAbierto === 'panel2'"
       >
         <mat-expansion-panel-header class="disable_ripple specific-class">
           <mat-panel-title>
@@ -109,6 +113,8 @@
         style="width: 280px"
         (opened)="panelOpenState = true"
         (closed)="panelOpenState = false"
+        (opened)="togglePanel('panel3')"
+        [expanded]="panelAbierto === 'panel3'"
       >
         <mat-expansion-panel-header class="disable_ripple specific-class">
           <mat-panel-title>
@@ -166,6 +172,57 @@
         </h6>
       </a>
     </mat-nav-list>
+    <div class="text-center footer-tabs mb-2">
+      <div class="accordion cursor-select" id="accordionExample">
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h2 class="mb-0">
+              <small
+                class="text-white font-usco-default font-weight-bold text-center"
+                style="font-size: 14px"
+                data-toggle="collapse"
+                data-target="#collapseOne"
+                aria-expanded="true"
+                aria-controls="collapseOne"
+                >© {{ anio | date : "yyyy" }} CITCD - Versión 1</small
+              >
+            </h2>
+          </div>
+          <div
+            id="collapseOne"
+            class="collapse"
+            aria-labelledby="headingOne"
+            data-parent="#accordionExample"
+          >
+            <div class="card-body">
+              <small class="text-white"
+                >HORA INICIO SESIÓN: <br />
+                {{ horaInicioSesion | date : "dd-MM-yyyy, h:mm a" }}
+              </small>
+              <hr class="dashed" />
+              <small class="text-white">
+                HORA FINALIZACIÓN: <br />
+                {{ horaFinSesion | date : "dd-MM-yyyy, h:mm a" }}
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <hr class="dashed" />
+      <small class="text-white"
+        >HORA INICIO SESIÓN: <br />
+        {{ horaInicioSesion | date : "dd-MM-yyyy, h:mm a" }}
+      </small>
+      <hr class="dashed" />
+      <small class="text-white">
+        HORA FINALIZACIÓN: <br />
+        {{ horaFinSesion | date : "dd-MM-yyyy, h:mm a" }}
+      </small>
+      <br /><br />
+      <small class="text-white font-usco-default font-weight-bold text-center"
+        >© {{ today | date : "yyyy" }} CITCD - Versión 2</small
+      > -->
+    </div>
   </mat-sidenav>
   <mat-sidenav-content (validarToken)="receiveMessage($event)">
     <mat-toolbar *ngIf="rol != ''" class="toolbar">

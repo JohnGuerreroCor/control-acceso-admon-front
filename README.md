@@ -1,27 +1,40 @@
-# VigilanciaAdministradorFront
+# Módulo Control Acceso Admon Front
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.8.
+![Logo de la USCO](https://www.usco.edu.co/imagen-institucional/logo/universidad-surcolombiana.png)
 
-## Development server
+Este módulo ha sido desarrollada utilizando las siguientes tecnologías:
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- **Angular 15.2.11**  
+  Documentación oficial: [https://angular.io/docs](https://www.npmjs.com/package/@angular/cli/v/15.2.11)
 
-## Code scaffolding
+- **Angular Material 15**  
+  Documentación oficial: [https://material.angular.io/](https://v15.material.angular.io/)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- **Bootstrap 4.6**  
+  Documentación oficial: [https://getbootstrap.com/docs/4.6/getting-started/introduction/](https://getbootstrap.com/docs/4.6/getting-started/introduction/)
 
-## Build
+- **FontAwesome 6**  
+  Documentación oficial: [https://fontawesome.com/docs](https://fontawesome.com/search?o=r&m=free)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Descripción
 
-## Running unit tests
+Permite crear, parametrizar y gestionar el personal de vigilantes externo que contrata la institución para la supervisión de la seguridad y acceso a la universidad.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Instalación y Uso
 
-## Running end-to-end tests
+1. Clona el repositorio:
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+   ```bash
+   git clone https://github.com/usuario/repo.git
+   ```
 
-## Further help
+2. Instala las dependencias:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+   ```bash
+   npm install
+   ```
+
+3. Corre la aplicación:
+   ```bash
+   ng serve
+   ```

@@ -1,130 +1,21 @@
 <app-navbar>
   <div class="container p-5">
-    <div class="row">
-      <div class="col">
+    <div class="row row-cols-1 row-cols-md-4">
+      <div class="col mb-4" *ngFor="let link of links">
         <div
-          class="card mb-4 cursor-select card-usco-menu shadow"
-          [routerLink]="['/puestos']"
+          class="card h-100 cursor-select card-usco-menu shadow"
+          [routerLink]="link.ruta"
+          #tooltip="matTooltip"
+          [matTooltip]="link.info"
+          matTooltipPosition="below"
         >
-          <div class="row">
-            <div class="col-md-4 text-center">
-              <img
-                class="rounded w-100 p-3 shadow"
-                src="assets/tower-observation-solid.png"
-              />
-            </div>
-            <div class="col-md-8 mt-3 text-left p-0">
-              <div class="card-block pr-4">
-                <h6
-                  class="card-title text-left font-usco-vt font-weight-bold cursor-select"
-                >
-                  Puesto de vigilancia
-                </h6>
-                <p style="font-size: 12px">
-                  Creación y administración de puestos de vigilancia para cada
-                  uno de los tipos peatonal y vehicular.
-                </p>
-              </div>
-            </div>
-          </div>
+          <h5
+            class="card-header pt-3 text-center font-usco-vt font-weight-bold"
+          >
+            {{ link.titulo }}
+          </h5>
+          <i class="{{ link.icono }}"></i>
         </div>
-        <div
-          class="card mb-4 cursor-select card-usco-menu shadow"
-          [routerLink]="['/tiquetes']"
-        >
-          <div class="row">
-            <div class="col-md-4 text-center">
-              <img
-                class="rounded w-100 p-3 shadow"
-                src="assets/ticket-solid.png"
-              />
-            </div>
-            <div class="col-md-8 mt-3 text-left p-0">
-              <div class="card-block pr-4">
-                <h6
-                  class="card-title text-left font-usco-vt font-weight-bold cursor-select"
-                >
-                  Tiquetes
-                </h6>
-                <p style="font-size: 12px">
-                  Generación de tiquetes de acceso para las personas externas a
-                  la institución.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col">
-        <div
-          class="card mb-4 cursor-select card-usco-menu shadow"
-          [routerLink]="['/vigilantes']"
-        >
-          <div class="row">
-            <div class="col-md-4 text-center">
-              <img
-                class="rounded w-100 p-3 shadow filter-green"
-                src="assets/user-shield-solid.png"
-              />
-            </div>
-            <div class="col-md-8 mt-3 text-left p-0">
-              <div class="card-block pr-4">
-                <h6
-                  class="card-title text-left font-usco-vt font-weight-bold cursor-select"
-                >
-                  Vigilantes
-                </h6>
-                <p style="font-size: 12px">
-                  Registro de vigilantes para cada una de las sedes de la
-                  institución.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="card mb-4 cursor-select card-usco-menu shadow"
-          [routerLink]="['/reportes']"
-        >
-          <div class="row">
-            <div class="col-md-4 text-center">
-              <img
-                class="rounded w-100 p-3 shadow"
-                src="assets/chart-simple-solid.png"
-              />
-            </div>
-            <div class="col-md-8 mt-3 text-left p-0">
-              <div class="card-block pr-4">
-                <h6
-                  class="card-title text-left font-usco-vt font-weight-bold cursor-select"
-                >
-                  Reportes
-                </h6>
-                <p style="font-size: 12px">
-                  Generación de los reportes de ingreso y salida por cada puesto
-                  de vigilancia y sede de la institución.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!--  <div class="card mb-4 cursor-select card-usco-menu shadow">
-          <div class="row">
-            <div class="col-md-4 text-center">
-              <img class="rounded w-100 p-3 shadow" src="assets/id-card-solid.png" [routerLink]="['/']" />
-            </div>
-            <div class="col-md-8 px-3 mt-4">
-              <div class="card-block px-3">
-                <h6 [routerLink]="['/inicio']" class="card-title text-left font-usco-vt font-weight-bold cursor-select">
-                  Reportes
-                </h6>
-                <p>
-                  <small>Consulta y cargue de imágen de los diferentes estamentos</small>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div> -->
       </div>
     </div>
   </div>

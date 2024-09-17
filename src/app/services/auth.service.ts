@@ -3,46 +3,50 @@ import { Observable, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Usuario } from '../models/usuario';
-import { catchError } from 'rxjs/operators'
+import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import swal from 'sweetalert2'
+import swal from 'sweetalert2';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   private usuario: Usuario | undefined;
   private token!: any;
   public codigoverificacion!: any;
   private url: any = environment.URL_BACKEND;
-  private httpHeaders = new HttpHeaders({ 'Content-type': 'application/json' })
+  private httpHeaders = new HttpHeaders({ 'Content-type': 'application/json' });
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router) {}
 
   public get user(): Usuario {
     if (this.usuario != null) {
-      return this.usuario
-    } else if (this.usuario == null && localStorage.getItem('usuario') != null) {
-      this.usuario = JSON.parse(sessionStorage.getItem('usuario') || '{}') as Usuario;
-      return this.usuario
+      return this.usuario;
+    } else if (
+      this.usuario == null &&
+      localStorage.getItem('usuario') != null
+    ) {
+      this.usuario = JSON.parse(
+        sessionStorage.getItem('usuario') || '{}'
+      ) as Usuario;
+      return this.usuario;
     }
     return new Usuario();
   }
 
   public obtenerUaa(): number {
-    let { ucod } = (this.obtenerdatosToken(this.Token));
+    let { ucod } = this.obtenerdatosToken(this.Token);
     return ucod;
   }
 
   public obtenerPerCodigo(): number {
-    let { per_codigo } = (this.obtenerdatosToken(this.Token));
+    let { per_codigo } = this.obtenerdatosToken(this.Token);
     return per_codigo;
   }
 
   public get Token(): any {
     if (this.token != null) {
-      return this.token
+      return this.token;
     } else if (this.token == null && sessionStorage.getItem('token') != null) {
       this.token = sessionStorage.getItem('token');
       return this.token;
@@ -52,8 +56,11 @@ export class AuthService {
 
   public get Codigoverificacion(): any {
     if (this.codigoverificacion != null) {
-      return this.codigoverificacion
-    } else if (this.codigoverificacion == null && sessionStorage.getItem('codigo') != null) {
+      return this.codigoverificacion;
+    } else if (
+      this.codigoverificacion == null &&
+      sessionStorage.getItem('codigo') != null
+    ) {
       this.codigoverificacion = sessionStorage.getItem('codigo');
       return this.codigoverificacion;
     }
@@ -65,7 +72,7 @@ export class AuthService {
     const credenciales = btoa('angularapp' + ':' + '12345');
     const httpHeaders = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Basic ' + credenciales
+      Authorization: 'Basic ' + credenciales,
     });
     let params = new URLSearchParams();
 
@@ -74,10 +81,30 @@ export class AuthService {
     params.set('password', usuario.password);
     params.set('clave2', usuario.clave2);
 
-    return this.http.post<any>(url, params.toString(), { headers: httpHeaders }).pipe(
-      catchError(e => {
-        if (e) {
-          if (e.error.error_description == 'Bad credentials') {
+    return this.http
+      .post<any>(url, params.toString(), { headers: httpHeaders })
+      .pipe(
+        catchError((e) => {
+          if (e) {
+            if (e.error.error_description == 'Bad credentials') {
+              const Toast = swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener('mouseenter', swal.stopTimer);
+                  toast.addEventListener('mouseleave', swal.resumeTimer);
+                },
+              });
+
+              Toast.fire({
+                icon: 'error',
+                title: 'Primera contraseña incorrecta',
+              });
+              return [throwError(e), false];
+            }
             const Toast = swal.mixin({
               toast: true,
               position: 'top-end',
@@ -85,38 +112,20 @@ export class AuthService {
               timer: 3000,
               timerProgressBar: true,
               didOpen: (toast) => {
-                toast.addEventListener('mouseenter', swal.stopTimer)
-                toast.addEventListener('mouseleave', swal.resumeTimer)
-              }
+                toast.addEventListener('mouseenter', swal.stopTimer);
+                toast.addEventListener('mouseleave', swal.resumeTimer);
+              },
             });
 
             Toast.fire({
               icon: 'error',
-              title: 'Primera contraseña incorrecta'
+              title: 'Error de inicio de sesión',
             });
-            return [throwError(e), false];
+            return throwError(e);
           }
-          const Toast = swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener('mouseenter', swal.stopTimer)
-              toast.addEventListener('mouseleave', swal.resumeTimer)
-            }
-          });
-
-          Toast.fire({
-            icon: 'error',
-            title: 'Error de inicio de sesión'
-          });
           return throwError(e);
-        }
-        return throwError(e);
-      })
-    )
+        })
+      );
   }
 
   guardarUsuario(accessToken: string): void {
@@ -126,11 +135,12 @@ export class AuthService {
 
     this.usuario = new Usuario();
     this.usuario.username = datos.user_name;
-    this.usuario.per_codigo = datos.per_codigo;
+    this.usuario.personaCodigo = datos.personaCodigo;
     this.usuario.roles = datos.authorities;
-    this.usuario.nombre = datos.nombre;
-    this.usuario.apellido = datos.apellido;
-    this.usuario.uaa = datos.uaa;
+    this.usuario.personaNombre = datos.personaNombre;
+    this.usuario.personaApellido = datos.personaApellido;
+    this.usuario.uaaNombre = datos.uaaNombre;
+    this.usuario.horaInicioSesion = datos.horaInicioSesion;
 
     sessionStorage.setItem('usuario', JSON.stringify(this.usuario));
     localStorage.setItem('usuario', JSON.stringify(this.usuario));
@@ -138,19 +148,19 @@ export class AuthService {
 
   guardarToken(accessToken: string): void {
     this.token = accessToken;
-    localStorage.setItem('token', accessToken)
+    localStorage.setItem('token', accessToken);
     sessionStorage.setItem('token', accessToken);
   }
 
   guardarCodigoverificacion(codigo: string): void {
     this.codigoverificacion = codigo;
     sessionStorage.setItem('codigo', codigo);
-    localStorage.setItem('codigo', codigo)
+    localStorage.setItem('codigo', codigo);
   }
 
   obtenerdatosToken(accessToken: string): any {
     if (accessToken != null) {
-      return JSON.parse(atob(accessToken.split(".")[1]))
+      return JSON.parse(atob(accessToken.split('.')[1]));
     }
     return null;
   }
@@ -162,7 +172,6 @@ export class AuthService {
     }
     return false;
   }
-
 
   logout(): void {
     this.token = null;
@@ -179,7 +188,7 @@ export class AuthService {
   }
 
   private aggAutorizacionHeader(): HttpHeaders {
-    let token = this.token
+    let token = this.token;
     if (token != null) {
       return this.httpHeaders.append('Authorization', 'Bearer ' + token);
     }
@@ -193,5 +202,4 @@ export class AuthService {
     }
     return true;
   }
-
 }

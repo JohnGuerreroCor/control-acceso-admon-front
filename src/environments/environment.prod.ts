@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  // URL_BACKEND : "https://gaitana.usco.edu.co/planes_academicos"
   URL_BACKEND: 'https://sanagustin.usco.edu.co/control_acceso_admon',
+
   firebase: {
     apiKey: 'AIzaSyDCI1DjDRTyWgCJd681nhrEqY216Kfbm44',
     authDomain: 'doctoradocienciasdelasaludusco.firebaseapp.com',

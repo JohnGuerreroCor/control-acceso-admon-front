@@ -17,8 +17,6 @@ import {
 } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { UbicacionService } from '../../../services/ubicacion.service';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
@@ -52,10 +50,11 @@ export class VigilanteComponent implements OnInit {
   dataSource = new MatTableDataSource<Vigilante>([]);
   displayedColumns: string[] = [
     'index',
+    'id',
     'nombre',
+    'correo',
     'registro',
     'retiro',
-    'empresa',
     'opciones',
   ];
   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
